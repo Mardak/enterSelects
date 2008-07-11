@@ -1,0 +1,2 @@
+content enterSelects .
+style chrome://browser/content/browser.xul chrome://enterSelects/content/enterSelects.css
