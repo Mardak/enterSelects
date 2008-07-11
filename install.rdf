@@ -4,7 +4,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:name>Enter Selects</em:name>
     <em:id>enter.selects@agadak.net</em:id>
-    <em:version>2</em:version>
+    <em:version>3</em:version>
     <em:creator>Edward Lee (Mardak)</em:creator>
     <em:description>Press enter in the AwesomeBar to select the first result (without pressing down)</em:description>
     <em:homepageURL>http://ed.agadak.net/</em:homepageURL>
