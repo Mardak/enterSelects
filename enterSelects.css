@@ -1,3 +1,0 @@
-#urlbar {
-  -moz-binding: url(chrome://enterSelects/content/enterSelects.xml#urlbar) !important;
-}
