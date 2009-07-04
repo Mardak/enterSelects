@@ -3,6 +3,46 @@
   <script type="application/javascript">
   <![CDATA[
     addEventListener("load", function() {
+      // Wait for results to get added to the popup
+      let popup = gURLBar.popup;
+      let (orig = popup._appendCurrentResult) {
+        popup._appendCurrentResult = function() {
+          // Run the original first to get results added
+          orig.apply(this, arguments);
+
+          // Don't bother if something is already selected
+          if (popup.selectedIndex >= 0)
+            return;
+
+          // Make sure there's results
+          if (popup._currentIndex == 0)
+            return;
+
+          // We might need to quit early if there is *no* spaces in the input
+          if (gURLBar.value.match(/ /) == null) {
+            try {
+              // Quit early if the input is already a URI
+              return Cc["@mozilla.org/network/io-service;1"].
+                     getService(Ci.nsIIOService).
+                     newURI(gURLBar.value, null, null);
+            }
+            catch(ex) {}
+    
+            try {
+              // Quit early if the input is domain-like (e.g., site.com/page)
+              return Cc["@mozilla.org/network/effective-tld-service;1"].
+                     getService(Ci.nsIEffectiveTLDService).
+                     getBaseDomainFromHost(gURLBar.value);
+            }
+            catch(ex) {}
+          }
+
+          // We passed all the checks, so pretend the user has the first result
+          // selected, so this causes the UI to show the selection style
+          popup.selectedIndex = 0;
+        };
+      }
+
       gURLBar.addEventListener("keydown", function(aEvent) {
         // Only interested in the user pressing enter (return)
         if (aEvent.keyCode != KeyEvent.DOM_VK_RETURN)
@@ -12,36 +52,10 @@
         if (aEvent.shiftKey || aEvent.ctrlKey || aEvent.metaKey)
           return;
 
-        // Quit if there's something selected or the popup is closed
-        if (gURLBar.popup.selectedIndex >= 0 || !gURLBar.popupOpen)
-          return;
-
-        // No matches? Nothing to select!
-        if (gURLBar.controller.matchCount == 0)
-          return;
-
-        // We might need to quit early if there is *no* spaces in the input
-        if (gURLBar.value.match(/ /) === null) {
-          try {
-            // Quit early if the input is already a URI
-            return Components.classes["@mozilla.org/network/io-service;1"].
-                   getService(Components.interfaces.nsIIOService).
-                   newURI(gURLBar.value, null, null);
-          }
-          catch (e) { }
-  
-          try {
-            // Quit early if the input is domain-like (e.g., site.com/page)
-            return Components.classes["@mozilla.org/network/effective-tld-service;1"].
-                   getService(Components.interfaces.nsIEffectiveTLDService).
-                   getBaseDomainFromHost(gURLBar.value);
-          }
-          catch (e) { }
-        }
-
-        // We passed all the checks, so all we need to do now is pretend the
-        // user pressed down just before pressing return
-        gURLBar.controller.handleKeyNavigation(KeyEvent.DOM_VK_DOWN);
+        // Pretend the user pressed right in the location bar which will cause
+        // the selected index to be filled in. If the user has already pressed
+        // down to some other selection, it'll just show the same value.
+        gURLBar.controller.handleKeyNavigation(KeyEvent.DOM_VK_RIGHT);
       }, false);
     }, false);
   ]]>
