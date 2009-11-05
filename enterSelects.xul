@@ -44,6 +44,10 @@
       }
 
       gURLBar.addEventListener("keydown", function(aEvent) {
+        // Allow editing if the user moves left
+        if (aEvent.keyCode == KeyEvent.DOM_VK_LEFT)
+          popup.selectedIndex = -1;
+
         // Only interested in the user pressing enter (return)
         if (aEvent.keyCode != KeyEvent.DOM_VK_RETURN)
           return;
