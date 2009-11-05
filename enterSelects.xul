@@ -79,13 +79,22 @@
       }
 
       gURLBar.addEventListener("keydown", function(aEvent) {
-        // Allow editing if the user moves left
-        if (aEvent.keyCode == KeyEvent.DOM_VK_LEFT)
-          popup.selectedIndex = -1;
+        switch (aEvent.keyCode) {
+          // For movement keys, unselect the first item to allow editing
+          case KeyEvent.DOM_VK_LEFT:
+          case KeyEvent.DOM_VK_RIGHT:
+          case KeyEvent.DOM_VK_HOME:
+            popup.selectedIndex = -1;
+            return;
 
-        // Only interested in the user pressing enter (return)
-        if (aEvent.keyCode != KeyEvent.DOM_VK_RETURN)
-          return;
+          // We're interested in handling enter (return), do so below
+          case KeyEvent.DOM_VK_RETURN:
+            break;
+
+          // For anything else, just ignore
+          default:
+            return;
+        }
 
         // Ignore special key combinations
         if (aEvent.shiftKey || aEvent.ctrlKey || aEvent.metaKey)
