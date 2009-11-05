@@ -13,6 +13,26 @@
       gURLBar.__defineGetter__("trimmedSearch", function() {
         return this.value.replace(/^\s+|\s+$/g, "");
       });
+      gURLBar.hasURL = function() {
+        // Potentially it's a url if there's no spaces
+        let search = this.trimmedSearch;
+        if (search.match(/ /) == null) {
+          try {
+            // Quit early if the input is already a URI
+            return Cc["@mozilla.org/network/io-service;1"].
+              getService(Ci.nsIIOService).newURI(gURLBar.value, null, null);
+          }
+          catch(ex) {}
+    
+          try {
+            // Quit early if the input is domain-like (e.g., site.com/page)
+            return Cc["@mozilla.org/network/effective-tld-service;1"].
+              getService(Ci.nsIEffectiveTLDService).
+              getBaseDomainFromHost(gURLBar.value);
+          }
+          catch(ex) {}
+        }
+      };
 
       // Wait for results to get added to the popup
       let (orig = popup._appendCurrentResult) {
@@ -28,24 +48,9 @@
           if (popup._currentIndex == 0)
             return;
 
-          // We might need to quit early if there is *no* spaces in the input
-          if (gURLBar.value.match(/ /) == null) {
-            try {
-              // Quit early if the input is already a URI
-              return Cc["@mozilla.org/network/io-service;1"].
-                     getService(Ci.nsIIOService).
-                     newURI(gURLBar.value, null, null);
-            }
-            catch(ex) {}
-    
-            try {
-              // Quit early if the input is domain-like (e.g., site.com/page)
-              return Cc["@mozilla.org/network/effective-tld-service;1"].
-                     getService(Ci.nsIEffectiveTLDService).
-                     getBaseDomainFromHost(gURLBar.value);
-            }
-            catch(ex) {}
-          }
+          // Don't auto-select if we have a url
+          if (gURLBar.hasURL())
+            return;
 
           // We passed all the checks, so pretend the user has the first result
           // selected, so this causes the UI to show the selection style
