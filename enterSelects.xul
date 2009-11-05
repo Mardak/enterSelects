@@ -16,7 +16,7 @@
       gURLBar.__defineGetter__("trimmedSearch", function() {
         return this.value.replace(/^\s+|\s+$/g, "");
       });
-      gURLBar.hasURL = function() {
+      gURLBar.__defineGetter__("willHandle", function() {
         // Potentially it's a url if there's no spaces
         let search = this.trimmedSearch;
         if (search.match(/ /) == null) {
@@ -35,7 +35,12 @@
           }
           catch(ex) {}
         }
-      };
+
+        // Check if there's an search engine registered for the first keyword
+        let keyword = search.split(/\s+/)[0];
+        return Cc["@mozilla.org/browser/search-service;1"].
+          getService(Ci.nsIBrowserSearchService).getEngineByAlias(keyword);
+      });
 
       // Wait for results to get added to the popup
       let (orig = popup._appendCurrentResult) {
@@ -52,7 +57,7 @@
             return;
 
           // Don't auto-select if we have a url
-          if (gURLBar.hasURL())
+          if (gURLBar.willHandle)
             return;
 
           // We passed all the checks, so pretend the user has the first result
@@ -91,7 +96,7 @@
           popup.selectedIndex = -1;
 
           // If it's not a url, we'll want to auto-select the first result
-          if (!gURLBar.hasURL()) {
+          if (!gURLBar.willHandle) {
             autoSelectOn = gURLBar.trimmedSearch;
 
             // Don't load what's typed in the location bar because it's a search
