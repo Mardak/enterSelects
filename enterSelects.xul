@@ -3,8 +3,18 @@
   <script type="application/javascript">
   <![CDATA[
     addEventListener("load", function() {
-      // Wait for results to get added to the popup
+      // Add some helper functions to various objects
       let popup = gURLBar.popup;
+      popup.__defineGetter__("selectedSearch", function() {
+        if (this.selectedIndex == -1)
+          return "";
+        return this.richlistbox.selectedItem.getAttribute("text");
+      });
+      gURLBar.__defineGetter__("trimmedSearch", function() {
+        return this.value.replace(/^\s+|\s+$/g, "");
+      });
+
+      // Wait for results to get added to the popup
       let (orig = popup._appendCurrentResult) {
         popup._appendCurrentResult = function() {
           // Run the original first to get results added
@@ -55,6 +65,12 @@
         // Ignore special key combinations
         if (aEvent.shiftKey || aEvent.ctrlKey || aEvent.metaKey)
           return;
+
+        // Deselect if the selected result isn't for the current search
+        if (popup.selectedSearch != gURLBar.trimmedSearch) {
+          popup.selectedIndex = -1;
+          return;
+        }
 
         // Pretend the user pressed right in the location bar which will cause
         // the selected index to be filled in. If the user has already pressed
