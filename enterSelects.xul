@@ -8,6 +8,9 @@
 
       // Add some helper functions to various objects
       let popup = gURLBar.popup;
+      popup.__defineGetter__("noResults", function() {
+        return this._matchCount == 0;
+      });
       popup.__defineGetter__("selectedSearch", function() {
         if (this.selectedIndex == -1)
           return "";
@@ -48,7 +51,7 @@
             return;
 
           // Make sure there's results
-          if (popup._currentIndex == 0)
+          if (popup.noResults)
             return;
 
           // Don't auto-select if we have a url
@@ -84,7 +87,7 @@
           return;
 
         // Deselect if the selected result isn't for the current search
-        if (popup.selectedSearch != gURLBar.trimmedSearch) {
+        if (!popup.noResults && popup.selectedSearch != gURLBar.trimmedSearch) {
           popup.selectedIndex = -1;
 
           // If it's not a url, we'll want to auto-select the first result
