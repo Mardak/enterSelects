@@ -66,8 +66,7 @@
 
           // If the just-added result is what to auto-select, make it happen
           if (autoSelectOn == gURLBar.trimmedSearch) {
-            gURLBar.controller.handleKeyNavigation(KeyEvent.DOM_VK_RIGHT);
-            gURLBar.controller.handleEnter(false);
+            gURLBar.controller.handleEnter(true);
 
             // Clear out what to auto-select now that we've done it once
             autoSelectOn = null;
