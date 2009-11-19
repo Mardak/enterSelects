@@ -1,2 +1,2 @@
 content enterSelects .
-overlay chrome://browser/content chrome://enterSelects/content
+overlay chrome://browser/content/browser.xul chrome://enterSelects/content/enterSelects.xul
