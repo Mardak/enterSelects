@@ -1,0 +1,10 @@
+Enter Selects add-on helps users save time by automatically selecting the first reuslt from the AwesomeBar.
+
+This is built with the Add-on SDK:
+https://builder.addons.mozilla.org/docs/
+
+To build from the top level after activating SDK:
+cfx xpi
+
+Pre-built xpi available on AMO:
+https://addons.mozilla.org/firefox/addon/enter-selects/
