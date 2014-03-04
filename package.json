@@ -2,7 +2,7 @@
     "name": "enter-selects",
     "license": "MPL 2.0",
     "author": "Edward Lee (Mardak)",
-    "version": "8",
+    "version": "9",
     "fullName": "Enter Selects",
     "id": "enter.selects@agadak.net",
     "description": "Press enter in the AwesomeBar to select the first result (without pressing down)",
