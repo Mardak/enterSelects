@@ -7,5 +7,5 @@
     "id": "enter.selects@agadak.net",
     "description": "Press enter in the AwesomeBar to select the first result (without pressing down)",
     "dependencies": ["api-utils", "addon-kit"],
-    "main": "./main.js"
+    "main": "lib/main.js"
 }
