@@ -2,6 +2,9 @@
   "author": "Edward Lee (Mardak)",
   "dependencies": ["api-utils", "addon-kit"],
   "description": "Press enter in the AwesomeBar to select the first result (without pressing down)",
+  "engines": {
+    "firefox": ">=48.0a1"
+  },
   "fullName": "Enter Selects",
   "id": "enter.selects@agadak.net",
   "license": "MPL 2.0",
